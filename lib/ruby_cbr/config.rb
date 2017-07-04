@@ -34,10 +34,19 @@ module CBR
       @similarities
     end
 
-    def similarity(c, attr)
+    def similarity(c, attr_name, attr_value)
       #('CBR::Similarity::'+@similarities[c.class.name][attr][:similarity]).constantize
-      max_distance = @similarities[c.class.name][attr][:max_distance]
-      Object.const_get('CBR::Similarity::'+@similarities[c.class.name][attr][:similarity]).new(max_distance: max_distance)
+      attr_config = @similarities[c.class.name][attr_name]
+      max_distance = attr_config[:max_distance]
+      class_name = 'CBR::Similarity::'+attr_config[:similarity]
+      similarity_class = Object.const_get(class_name).new(max_distance: max_distance)
+      similarity_class.compare(attr_value, c.send(attr_name))
+    end
+
+    def weighted_similarity(c, attr_name, attr_value)
+      attr_config = @similarities[c.class.name][attr_name]
+      weight = attr_config[:rel_weight]
+      weight * similarity(c, attr_name, attr_value)
     end
 
   end

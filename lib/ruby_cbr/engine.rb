@@ -20,7 +20,7 @@ module CBR
         cases.each do |c|
           c.compared_case = compared_case
           c.score = attributes.map do |attr_name, attr_value|
-            @config.similarity(c, attr_name).compare(attr_value, c.send(attr_name))
+            @config.weighted_similarity(c, attr_name, attr_value)
           end.reduce(:+)
           result << c if c.score >= treshold
         end
