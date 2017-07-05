@@ -18,6 +18,10 @@ module CBR
       end
 
       def compare(a, b)
+        a = Time.zone.now if a.eql?('{{now}}')
+        b = Time.zone.now if b.eql?('{{now}}')
+        a = Time.zone.yesterday if a.eql?('{{yesterday}}')
+        b = Time.zone.yesterday if b.eql?('{{yesterday}}')
         real_distance = (a-b).abs
         transform(normalize(real_distance))
       end

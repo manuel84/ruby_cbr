@@ -12,28 +12,9 @@ class RubyCbrTest < Minitest::Test
     t = Tweet.new
     t.value = 'Hallolo Welt'
     t.published_at = Time.now - 50*24*60*60
-    t.cbr_config = {
-        value: {
-            similarity: 'StringSimilarity',
-            weight: 1,
-            values: nil,
-            #max_distance: 30,
-            default: '',
-            display_name: '(not set)',
-            display_type: 'text'
-        },
-        published_at: {
-            similarity: 'DateSimilarity',
-            weight: 20,
-            values: nil,
-            max_distance: 30,
-            default: '',
-            display_name: '(not set)',
-            display_type: 'text'
-        }
-    }
+
     CBR::Engine.instance.dedicated_cases = [t1, t]
-    scored_cases = t.query
+    scored_cases = t.cbr_query
     puts scored_cases.map {|x| x.score.to_f}
     puts scored_cases.map(&:compared_case)
   end
