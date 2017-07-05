@@ -2,7 +2,7 @@ require 'singleton'
 module CBR
   class Engine
     include Singleton
-    attr_accessor :cases, :treshold, :config
+    attr_accessor :dedicated_cases, :treshold, :config
 
     def initialize
       @config ||= CBR::Config.instance
@@ -31,6 +31,14 @@ module CBR
     def retrieve_all(attributes)
       all_treshold = BigDecimal.new('0.0')
       retrieve(attributes, all_treshold)
+    end
+
+    def cases
+      if dedicated_cases
+        dedicated_cases
+      else
+        ObjectSpace.each_object(Class).select {|c| c.included_modules.include? CBR::Case}.map(&:all).reduce(:+)
+      end
     end
 
   end

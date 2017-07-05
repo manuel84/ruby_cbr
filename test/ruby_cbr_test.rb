@@ -12,7 +12,7 @@ class RubyCbrTest < Minitest::Test
     t = Tweet.new
     t.value = 'Hallolo Welt'
     t.published_at = Time.now - 50*24*60*60
-    CBR::Config.instance.similarities['Tweet'] = {
+    t.cbr_config = {
         value: {
             similarity: 'StringSimilarity',
             weight: 1,
@@ -32,9 +32,9 @@ class RubyCbrTest < Minitest::Test
             display_type: 'text'
         }
     }
-    CBR::Engine.instance.cases = [t1, t]
-    cases = t.query
-    puts cases.map {|x| x.score.to_f}
-    puts cases.map(&:compared_case)
+    CBR::Engine.instance.dedicated_cases = [t1, t]
+    scored_cases = t.query
+    puts scored_cases.map {|x| x.score.to_f}
+    puts scored_cases.map(&:compared_case)
   end
 end
