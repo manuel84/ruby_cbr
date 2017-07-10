@@ -8,7 +8,7 @@ module CBR
       end
 
       def compare(a, b)
-        real_distance = BigDecimal.new(Levenshtein.distance(a, b))
+        real_distance = BigDecimal.new(Levenshtein.distance(a.to_s, b.to_s))
         transform(normalize(real_distance))
       end
     end

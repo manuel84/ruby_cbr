@@ -1,4 +1,6 @@
 require 'singleton'
+require 'pp'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module CBR
   class Config
@@ -22,8 +24,9 @@ module CBR
     end
 
     def calculate_relative_weights
+      @similarities = @similarities.with_indifferent_access
       total_weights = @similarities.values.map {|attributes| attributes[:weight]}.flatten.reduce(BigDecimal.new('0.0')) do |memo, w|
-        memo += w
+        memo += BigDecimal.new(w)
       end
       @similarities.each do |attr_name, attr_values|
         attr_values[:weight] = BigDecimal.new(attr_values[:weight])
