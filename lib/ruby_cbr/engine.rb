@@ -14,6 +14,8 @@ module CBR
       attributes = compared_case.cbr_attributes
       if attributes
         @config ||= CBR::Config.instance
+        cbr_config = compared_case.cbr_config
+        @config.similarities = cbr_config if cbr_config
         @config.calculate_relative_weights
         treshold ||= @treshold
         treshold = BigDecimal.new(treshold)
