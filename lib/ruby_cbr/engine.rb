@@ -47,6 +47,9 @@ module CBR
         @config.similarities = cbr_config if cbr_config
         @config.calculate_relative_weights!
         c.compared_case = target_case
+        attributes.each do |attr_name, attr_value|
+          #pp @config.weighted_similarity(c, attr_name, attr_value).to_f
+        end
         c.score = attributes.map do |attr_name, attr_value|
           @config.weighted_similarity(c, attr_name, attr_value)
         end.reduce(:+)

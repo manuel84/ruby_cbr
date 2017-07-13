@@ -7,9 +7,9 @@ module CBR
         super(opts)
       end
 
-      def compare(value, target_value)
-        real_distance = BigDecimal.new(Levenshtein.distance(value.to_s, target_value.to_s))
-        super(real_distance, BigDecimal.new('1.0'))
+      def compare(target_value, real_value)
+        real_distance = BigDecimal.new(Levenshtein.distance(real_value.to_s, target_value.to_s))
+        super(BigDecimal.new('1.0'), real_distance)
       end
     end
   end

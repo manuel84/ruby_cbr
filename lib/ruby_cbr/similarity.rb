@@ -28,7 +28,8 @@ module CBR
       # max_distance = nil (B)
       # normalized_value = 7 (A)
       # normalized_value = 4 (B)
-      md = @options[:max_distance] ? @options[:max_distance] : BigDecimal.new(@options[:target_value])
+      md = @options[:max_distance].present? ? @options[:max_distance] : BigDecimal.new(@options[:target_value])
+      return BigDecimal.new('0.0') if md.zero?
       (md - normalized_distance) / md
     end
 
@@ -56,10 +57,11 @@ module CBR
       (normalized_value - md) / @options[:target_value]
     end
 
-    def compare(real_value, target_value)
-      @options[:target_value] = target_value
+    def compare(target_value, real_distance)
+      @options[:target_value] = BigDecimal.new(target_value)
       return BigDecimal.new('0.0') if @options[:target_value].zero? # avoid divison by zero
-      score(normalize(real_value)) # real value as calculated sitance
+      result = score(normalize(real_distance)) # real value as calculated sitance
+      result
     end
   end
 end
