@@ -8,15 +8,11 @@ class RubyCbrTest < Minitest::Test
 
   def test_tweet_extending_case
     t1 = Tweet.new
-    t1.value = 'Hallo Welt'
-    t1.published_at = Time.now
-    t = Tweet.new
-    t.value = 'Hallolo Welt'
-    t.published_at = Time.now - 50*24*60*60
+    t2 = Tweet.new
 
-    CBR::Engine.instance.dedicated_cases = [t1, t]
-    scored_cases = t.cbr_query
-    pp scored_cases.map {|x| x.score.to_f}
-    pp scored_cases.map(&:compared_case)
+    CBR::Engine.instance.dedicated_cases = [t1, t2]
+    scored_case = t1.cbr_query
+    pp scored_case.score.to_f
+    pp scored_case.compared_case
   end
 end

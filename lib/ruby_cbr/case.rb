@@ -4,7 +4,11 @@ module CBR
 
     def cbr_query
       @cbr ||= CBR::Engine.instance
-      @cbr.config.similarities[self.class.name] = self.cbr_config
+      @cbr.calculate_score(self)
+    end
+
+    def cbr_retrieve
+      @cbr ||= CBR::Engine.instance
       @cbr.retrieve_all(self)
     end
 

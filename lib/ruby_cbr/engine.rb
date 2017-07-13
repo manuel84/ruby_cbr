@@ -9,6 +9,7 @@ module CBR
       @treshold = BigDecimal.new('0.0')
     end
 
+
     def retrieve(c, treshold=nil)
       result = []
       attributes = c.cbr_attributes
@@ -35,6 +36,23 @@ module CBR
     def retrieve_all(c)
       all_treshold = BigDecimal.new('0.0')
       retrieve(c, all_treshold)
+    end
+
+    def calculate_score(c)
+      attributes = c.cbr_attributes
+      if attributes
+        target_case = c.cbr_target_case
+        @config ||= CBR::Config.instance
+        cbr_config = target_case.cbr_config
+        @config.similarities = cbr_config if cbr_config
+        @config.calculate_relative_weights!
+        c.compared_case = target_case
+        c.score = attributes.map do |attr_name, attr_value|
+          @config.weighted_similarity(c, attr_name, attr_value)
+        end.reduce(:+)
+        c.score
+      end
+      c
     end
 
     def cases
