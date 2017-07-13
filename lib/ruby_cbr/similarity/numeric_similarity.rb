@@ -3,13 +3,12 @@ module CBR
     class NumericSimilarity < Similarity
 
       def initialize(opts={})
-        opts[:max_distance] ||= 1000
         super(opts)
       end
 
-      def compare(a, b)
-        real_distance = (BigDecimal.new(a) - BigDecimal.new(b)).abs
-        transform(normalize(real_distance))
+      def compare(real_value, target_value)
+        real_distance = (BigDecimal.new(real_value) - BigDecimal.new(target_value)).abs
+        super(real_distance, target_value)
       end
     end
   end

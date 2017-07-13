@@ -5,28 +5,31 @@ module CBR
     class DateSimilarity < Similarity
 
       def initialize(opts={})
-        opts[:max_distance] ||= 100.days
+        opts[:max_distance] ||= (100.days).to_i * 60 # in minutes
         super(opts)
       end
 
-      def normalize(real_distance)# TODO: ...
-        max_distance = @options[:max_distance].to_i
-        [max_distance, real_distance].min
+      def score(normalized_distance)
+        # target_value = 10
+        # real_value = 4
+        # max_distance = 3 (A)
+        # max_distance = nil (B)
+        # normalized_value = 7 (A)
+        # normalized_value = 4 (B)
+        md = @options[:max_distance] ? @options[:max_distance] : BigDecimal.new(@options[:target_value])
+        (md - normalized_distance) / md
       end
 
-      def transform(normalized_distance)# TODO: ...
-        max_distance = BigDecimal.new(@options[:max_distance])
-        (max_distance - normalized_distance) / max_distance
-      end
+      def compare(real_value, target_value)
+        real_value = Time.zone.now if real_value.eql?('{{now}}')
+        target_value = Time.zone.now if target_value.eql?('{{now}}')
+        real_value = Time.zone.yesterday if real_value.eql?('{{yesterday}}')
+        target_value = Time.zone.yesterday if target_value.eql?('{{yesterday}}')
 
-      def compare(a, b)
-        a = Time.zone.now if a.eql?('{{now}}')
-        b = Time.zone.now if b.eql?('{{now}}')
-        a = Time.zone.yesterday if a.eql?('{{yesterday}}')
-        b = Time.zone.yesterday if b.eql?('{{yesterday}}')
-        return BigDecimal('0.0') if a.nil? or b.nil?
-        real_distance = ((a-b) / (24)).to_i # in minutes
-        transform(normalize(real_distance))
+        return BigDecimal('0.0') if real_value.nil? or target_value.nil?
+        real_distance = BigDecimal((target_value-real_value) / (24).to_i, 2).abs # in minutes
+        tv = BigDecimal.new((Time.now - target_value), 2)
+        super(real_distance, tv)
       end
     end
   end

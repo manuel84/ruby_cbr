@@ -23,7 +23,7 @@ module CBR
       }
     end
 
-    def calculate_relative_weights
+    def calculate_relative_weights!
       @similarities = @similarities.with_indifferent_access
       total_weights = @similarities.values.map {|attributes| attributes[:weight]}.flatten.reduce(BigDecimal.new('0.0')) do |memo, w|
         memo += BigDecimal.new(w)
@@ -37,10 +37,11 @@ module CBR
 
     def similarity(c, attr_name, attr_value)
       #('CBR::Similarity::'+@similarities[c.class.name][attr][:similarity]).constantize
-      attr_config = @similarities[attr_name]
-      max_distance = attr_config[:max_distance]
+      attr_config = @similarities[attr_name].with_indifferent_access
+      opts = {}
+      opts[:max_distance] = attr_config[:max_distance] unless attr_config[:max_distance].to_s.strip.eql?('')
       class_name = 'CBR::Similarity::'+attr_config[:similarity]
-      similarity_class = Object.const_get(class_name).new(max_distance: max_distance)
+      similarity_class = Object.const_get(class_name).new(opts)
       similarity_class.compare(attr_value, c.send(attr_name))
     end
 

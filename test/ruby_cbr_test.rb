@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pp'
 
 class RubyCbrTest < Minitest::Test
   def test_that_it_has_a_version_number
@@ -15,7 +16,7 @@ class RubyCbrTest < Minitest::Test
 
     CBR::Engine.instance.dedicated_cases = [t1, t]
     scored_cases = t.cbr_query
-    puts scored_cases.map {|x| x.score.to_f}
-    puts scored_cases.map(&:compared_case)
+    pp scored_cases.map {|x| x.score.to_f}
+    pp scored_cases.map(&:compared_case)
   end
 end
