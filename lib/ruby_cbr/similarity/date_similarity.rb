@@ -19,6 +19,10 @@ module CBR
         real_value = Time.parse(real_value) if real_value.is_a?(String)
         real_distance = BigDecimal.new(((target_value - real_value) / 24).to_i, 2).abs # in minutes
         tv = BigDecimal.new(((Time.now-target_value)/24).to_i, 2)
+        if tv.zero?
+          tv += 1
+          real_distance += 1
+        end
         super(tv, real_distance)
       end
     end

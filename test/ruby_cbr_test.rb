@@ -12,6 +12,9 @@ class RubyCbrTest < Minitest::Test
 
     CBR::Engine.instance.dedicated_cases = [t1, t2]
     scored_case = t1.cbr_query
+    pp scored_case.score_details
+    pp scored_case.score_details['published_at'].to_f
+    pp scored_case.score_details['favorite_count'].to_f
     pp scored_case.score.to_f
     pp scored_case.compared_case
   end

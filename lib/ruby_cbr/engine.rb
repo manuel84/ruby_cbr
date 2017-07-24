@@ -23,9 +23,11 @@ module CBR
         treshold = BigDecimal.new(treshold)
         cases.each do |c|
           c.compared_case = target_case
-          c.score = attributes.map do |attr_name, attr_value|
-            @config.weighted_similarity(c, attr_name, attr_value)
-          end.reduce(:+)
+          c.score_details = {}
+          attributes.each do |attr_name, attr_value|
+            c.score_details[attr_name] = @config.weighted_similarity(c, attr_name, attr_value)
+          end
+          c.score = c.score_details.values.reduce(:+)
           #pp c.score
           result << c if c.score >= treshold
         end
@@ -47,12 +49,10 @@ module CBR
         @config.similarities = cbr_config if cbr_config
         @config.calculate_relative_weights!
         c.compared_case = target_case
+        c.score_details = {}
         attributes.each do |attr_name, attr_value|
-          #pp @config.weighted_similarity(c, attr_name, attr_value).to_f
+          c.score_details[attr_name] = @config.weighted_similarity(c, attr_name, attr_value)
         end
-        c.score = attributes.map do |attr_name, attr_value|
-          @config.weighted_similarity(c, attr_name, attr_value)
-        end.reduce(:+)
         c.score
       end
       c

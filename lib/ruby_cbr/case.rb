@@ -1,6 +1,6 @@
 module CBR
   module Case
-    attr_accessor :cbr, :compared_case, :score
+    attr_accessor :cbr, :compared_case, :score, :score_details
 
     def cbr_query
       @cbr ||= CBR::Engine.instance

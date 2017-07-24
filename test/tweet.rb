@@ -4,7 +4,7 @@ class Tweet
   attr_accessor :value, :published_at
 
   def cbr_attributes
-    {'published_at' => Time.parse('Thu, 06 Jul 2017 16:01:53 +0200'),
+    {'published_at' => Time.now,#Time.parse('Thu, 06 Jul 2017 16:01:53 +0200'),
      'favorite_count' => 1,
      'retweet_count' => 10,
      'user_statuses_count' => 10,
@@ -24,10 +24,10 @@ class Tweet
           'max_distance' => '10',
           'weight' => '25'},
      'favorite_count' =>
-         {'value' => '100',
+         {'value' => '10',
           'similarity' => 'NumericSimilarity',
-          'max_distance' => '0',
-          'weight' => '27'},
+          'max_distance' => '10',
+          'weight' => '400'},
      'retweet_count' =>
          {'value' => '20',
           'similarity' => 'NumericSimilarity',
