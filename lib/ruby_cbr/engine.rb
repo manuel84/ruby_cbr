@@ -53,6 +53,7 @@ module CBR
         attributes.each do |attr_name, attr_value|
           c.score_details[attr_name] = @config.weighted_similarity(c, attr_name, attr_value)
         end
+        c.score = c.score_details.values.reduce(:+)
         c.score
       end
       c
