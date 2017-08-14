@@ -40,6 +40,7 @@ module CBR
       attr_config = @similarities[attr_name].with_indifferent_access
       target_value = attr_config[:value]
       opts = {}
+      opts[:tolerance_distance] = attr_config[:tolerance_distance] unless attr_config[:max_distance].to_s.strip.eql?('')
       opts[:max_distance] = attr_config[:max_distance] unless attr_config[:max_distance].to_s.strip.eql?('')
       class_name = 'CBR::Similarity::'+attr_config[:similarity]
       similarity_class = Object.const_get(class_name).new(opts)
@@ -49,7 +50,12 @@ module CBR
     def weighted_similarity(c, attr_name, attr_value)
       attr_config = @similarities[attr_name]
       weight = attr_config[:rel_weight]
-      weight * similarity(c, attr_name, attr_value)
+      similarity = similarity(c, attr_name, attr_value)
+      {
+          weight: weight,
+          local_similarity: similarity,
+          value: weight * similarity
+      }
     end
 
   end

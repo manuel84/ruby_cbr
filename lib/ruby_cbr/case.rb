@@ -13,11 +13,11 @@ module CBR
     end
 
     def cbr_config
-      raise NotImplementedError
+      raise NotImplementedError, __method__.to_s
     end
 
     def cbr_attributes
-      raise NotImplementedError
+      raise NotImplementedError, __method__.to_s
     end
   end
 end

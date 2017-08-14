@@ -5,7 +5,8 @@ module CBR
     class DateSimilarity < Similarity
 
       def initialize(opts={})
-        opts[:max_distance] ||= (100.days).to_i * 60 # in minutes
+        opts[:tolerance_distance] ||= (2.hours).to_i * 3600 # in seconds
+        opts[:max_distance] ||= (10.days).to_i * 3600 # in seconds
         super(opts)
       end
 
@@ -17,13 +18,9 @@ module CBR
         return BigDecimal('0.0') if real_value.nil? or target_value.nil?
         target_value = Time.parse(target_value) if target_value.is_a?(String)
         real_value = Time.parse(real_value) if real_value.is_a?(String)
-        real_distance = BigDecimal.new(((target_value - real_value) / 24).to_i, 2).abs # in minutes
-        tv = BigDecimal.new(((Time.now-target_value)/24).to_i, 2)
-        if tv.zero?
-          tv += 1
-          real_distance += 1
-        end
-        super(tv, real_distance)
+        real_distance = BigDecimal.new((target_value - real_value).to_i, 4) # in seconds
+        return BigDecimal('0.0') if @options[:outreach] and real_distance < BigDecimal.new('0,0')
+        score(real_distance.abs)
       end
     end
   end

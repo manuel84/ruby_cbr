@@ -1,32 +1,39 @@
 class Tweet
   include CBR::Case
 
-  attr_accessor :value, :published_at
+  attr_accessor :cbr_attributes
 
-  def cbr_attributes
-    {'published_at' => Time.now,#Time.parse('Thu, 06 Jul 2017 16:01:53 +0200'),
-     'favorite_count' => 1,
-     'retweet_count' => 10,
-     'user_statuses_count' => 10,
-     'user_followers_count' => 1,
-     'user_friends_count' => 1,
-     'user_listed_count' => 1,
-     'user_favourites_count' => 1,
-     'user_created_at' => Time.parse('2017-07-06 14:24:11 UTC'),
-     'user_verified' => true,
-     'user_geo_enabled' => true}
+  def initialize
+    @cbr_attributes = {'published_at' => Time.now, #Time.parse('Thu, 06 Jul 2017 16:01:53 +0200'),
+                       'title' => 'Hallo Welt',
+                       'favorite_count' => 1,
+                       'retweet_count' => 10,
+                       'user_statuses_count' => 10,
+                       'user_followers_count' => 1,
+                       'user_friends_count' => 1,
+                       'user_listed_count' => 1,
+                       'user_favourites_count' => 1,
+                       #'user_created_at' => Time.parse('2017-07-06 14:24:11 UTC'),
+                       'user_verified' => true,
+                       'user_geo_enabled' => true}
   end
 
   def cbr_config
     {'published_at' =>
          {'value' => '{{now}}',
           'similarity' => 'DateSimilarity',
-          'max_distance' => '10',
+          'tolerance_distance' => '7200', # {{2.hours}}
+          'max_distance' => '864000', # {{10.days}}
+          'weight' => '25'},
+     'title' =>
+         {'value' => 'Hello World',
+          'similarity' => 'StringSimilarity',
           'weight' => '25'},
      'favorite_count' =>
-         {'value' => '10',
+         {'value' => '100',
           'similarity' => 'NumericSimilarity',
-          'max_distance' => '10',
+          'tolerance_distance' => '10',
+          'max_distance' => '30',
           'weight' => '400'},
      'retweet_count' =>
          {'value' => '20',
@@ -61,7 +68,7 @@ class Tweet
      'user_created_at' =>
          {'value' => '2010-01-01 00:00:00 +0100',
           'similarity' => 'DateSimilarity',
-          'max_distance' => '0',
+          'max_distance' => '9000000',
           'weight' => '24'},
      'user_verified' =>
          {'value' => 'true',
