@@ -40,8 +40,11 @@ module CBR
       attr_config = @similarities[attr_name].with_indifferent_access
       target_value = attr_config[:value]
       opts = {}
-      opts[:tolerance_distance] = attr_config[:tolerance_distance] unless attr_config[:max_distance].to_s.strip.eql?('')
+      opts[:tolerance_distance] = attr_config[:tolerance_distance] unless attr_config[:tolerance_distance].to_s.strip.eql?('')
       opts[:max_distance] = attr_config[:max_distance] unless attr_config[:max_distance].to_s.strip.eql?('')
+      opts[:tolerance_distance_value] = attr_config[:tolerance_distance_value] unless attr_config[:tolerance_distance_value].to_s.strip.eql?('')
+      opts[:max_distance_value] = attr_config[:max_distance_value] unless attr_config[:max_distance_value].to_s.strip.eql?('')
+      opts[:outreach] = attr_config[:outreach]
       class_name = 'CBR::Similarity::'+attr_config[:similarity]
       similarity_class = Object.const_get(class_name).new(opts)
       similarity_class.compare(target_value, attr_value)

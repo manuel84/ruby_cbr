@@ -50,7 +50,7 @@ module CBR
         @config.calculate_relative_weights!
         c.compared_case = target_case
         c.score_details = {}
-        attributes.each do |attr_name, attr_value|
+        attributes.select {|a_name, a_val| @config.similarities.keys.include?(a_name)}.each do |attr_name, attr_value|
           c.score_details[attr_name] = @config.weighted_similarity(c, attr_name, attr_value)
         end
         c.score = c.score_details.values.map {|ws| ws[:value]}.reduce(:+)
