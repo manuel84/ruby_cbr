@@ -16,6 +16,8 @@ module CBR
         return BigDecimal('0.0') if real_value.nil? or target_value.nil?
         target_value = Time.parse(target_value) if target_value.is_a?(String)
         real_value = Time.parse(real_value) if real_value.is_a?(String)
+        target_value = target_value.to_time unless target_value.is_a?(Time)
+        real_value = real_value.to_time unless real_value.is_a?(Time)
         real_distance = BigDecimal.new((real_value - target_value).to_i, 4) # in seconds
         score(real_distance)
       end
