@@ -54,7 +54,7 @@ module CBR
           c.score_details[attr_name] = @config.weighted_similarity(c, attr_name, attr_value)
         end
         c.score_details['penalty'] = c.cbr_penalty
-        c.score = [1, [0, (c.score_details.values.map {|ws| ws[:value]}.reduce(:+)) - c.score_details['penalty']].min].max
+        c.score = [BigDecimal.new(1), [BigDecimal.new(0), (c.score_details.values.map {|ws| ws[:value]}.reduce(:+))].min].max
         c.score
       end
       c
