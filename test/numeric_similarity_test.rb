@@ -34,7 +34,7 @@ class NumericSimilarityTest < Minitest::Test
   def test_numeric_in_range_under_target # 3
     @c1.cbr_attributes['favourite_count'] = 5
     scored_case = @c1.cbr_query
-    assert_in_delta 0.4, scored_case.score_details['favourite_count'][:local_similarity].to_f, 0.1
+    assert_in_delta 0.5, scored_case.score_details['favourite_count'][:local_similarity].to_f, 0.1
   end
 
   def test_numeric_tolerance_under_target # 4
