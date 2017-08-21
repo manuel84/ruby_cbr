@@ -53,7 +53,8 @@ module CBR
         attributes.select {|a_name, a_val| @config.similarities.keys.include?(a_name)}.each do |attr_name, attr_value|
           c.score_details[attr_name] = @config.weighted_similarity(c, attr_name, attr_value)
         end
-        c.score = c.score_details.values.map {|ws| ws[:value]}.reduce(:+)
+        c.score_details['penalty'] = c.cbr_penalty
+        c.score = (c.score_details.values.map {|ws| ws[:value]}.reduce(:+)) - c.score_details['penalty']
         c.score
       end
       c

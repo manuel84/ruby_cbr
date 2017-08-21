@@ -19,5 +19,9 @@ module CBR
     def cbr_attributes
       raise NotImplementedError, __method__.to_s
     end
+
+    def cbr_penalty
+      BigDecimal.new('0.0')
+    end
   end
 end
