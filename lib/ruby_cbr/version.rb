@@ -1,3 +1,3 @@
 module RubyCbr
-  VERSION = '0.4.9'
+  VERSION = '0.6.1'
 end

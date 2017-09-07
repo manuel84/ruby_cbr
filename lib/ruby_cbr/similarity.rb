@@ -4,41 +4,35 @@ module CBR
 
     def initialize(opts={})
       @options = opts
-      @options[:outreach] = true if @options[:outreach].nil?
-      @options[:tolerance_distance] ||= 0.0
-      @options[:max_distance] ||= 10.0
-      @options[:tolerance_distance] = BigDecimal.new(@options[:tolerance_distance], 4)
-      @options[:max_distance] = BigDecimal.new(@options[:max_distance], 4)
-      if @options[:tolerance_distance_value]
-        @options[:tolerance_distance_value] = BigDecimal.new(@options[:tolerance_distance_value])/100.0
-      end
-      @options[:tolerance_distance_value] ||= BigDecimal.new('1.0')
-      if @options[:max_distance_value]
-        @options[:max_distance_value] = BigDecimal.new(@options[:max_distance_value])/100.0
-      end
-      @options[:max_distance_value] ||= BigDecimal.new('0.0')
+      @borderpoints = @options[:borderpoints].keys.sort
+      @options[:borderpoints].each {|k, v| @options[:borderpoints][k] = BigDecimal.new(v)}
+      @ranges = @borderpoints.map.with_index {|p, i| (p...(@borderpoints[i+1])) if i+1 < @borderpoints.size}.compact
     end
 
-    def score(real_distance)
+    def score(real_value)
       zero = BigDecimal.new('0.0')
-      one = BigDecimal.new('1.0')
-
-      return one if real_distance.zero?
-      return zero if real_distance < zero and real_distance.abs > @options[:max_distance]
-      return @options[:max_distance_value] if real_distance < zero and real_distance.abs == @options[:max_distance]
-      if @options[:outreach] # non symmetric evaluation, 1.0 if real_distance > tolerance
-        return one if real_distance > zero
-        return @options[:tolerance_distance_value] if real_distance.abs <= @options[:tolerance_distance]
-      else # symmetric evaluation
-        return @options[:tolerance_distance_value] if real_distance.abs <= @options[:tolerance_distance]
-        return zero if real_distance.abs > @options[:max_distance]
+      result = BigDecimal.new('1.0')
+      comparable_borderpoints = @borderpoints.map(&:to_s)
+      if comparable_borderpoints.include?(real_value.to_s)
+        i = comparable_borderpoints.index(real_value.to_s)
+        result = @options[:borderpoints][@options[:borderpoints].keys[i]]
+      elsif real_value < @borderpoints.first
+        result = zero
+      elsif real_value > @borderpoints.last
+        result = @options[:borderpoints][@borderpoints.last]
+      else
+        @ranges.each do |range|
+          result = score_in_range(real_value, range) if range.cover?(real_value)
+        end
       end
-      range = BigDecimal.new(@options[:max_distance] - @options[:tolerance_distance], 4)
-      return zero if range.zero? # avoid divison by zero
-      result = one - BigDecimal.new(((real_distance.abs-@options[:tolerance_distance]) / range), 4)
-      result *= (@options[:tolerance_distance_value] - @options[:max_distance_value])
-      result += @options[:max_distance_value]
-      [result, [result, @options[:tolerance_distance_value]].max].min
+      result
+    end
+
+    def score_in_range(real_value, range)
+      m = (@options[:borderpoints][range.end] - @options[:borderpoints][range.begin]) / (range.end-range.begin)
+      x = (real_value - range.begin)
+      n = @options[:borderpoints][range.begin]
+      m * x + n
     end
   end
 end

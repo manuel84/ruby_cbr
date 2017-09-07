@@ -3,17 +3,13 @@ module CBR
     class NumericSimilarity < Similarity
 
       def initialize(opts={})
-        opts[:tolerance_distance] ||= 0.0
-        opts[:max_distance] ||= 10.0
+        opts[:borderpoints] = Hash[opts[:borderpoints].map {|k, v| [BigDecimal.new(k, 4), v]}]
         super(opts)
       end
 
-      def compare(target_value, real_value)
+      def compare(real_value)
         real_value = BigDecimal.new(real_value, 4)
-        target_value = BigDecimal.new(target_value, 4)
-        return BigDecimal('1.0') if @options[:outreach] and real_value >= target_value
-        real_distance = (real_value - target_value)
-        score(real_distance)
+        score(real_value)
       end
     end
   end

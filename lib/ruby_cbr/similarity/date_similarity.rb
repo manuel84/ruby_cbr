@@ -5,21 +5,23 @@ module CBR
     class DateSimilarity < Similarity
 
       def initialize(opts={})
-        opts[:tolerance_distance] ||= (2.hours).to_i * 3600 # in seconds
-        opts[:max_distance] ||= (10.days).to_i * 3600 # in seconds
+        opts[:borderpoints] = Hash[opts[:borderpoints].map {|k, v| [date_time_of(k.to_s), v]}]
         super(opts)
       end
 
-      def compare(target_value, real_value)
-        target_value = Time.now if target_value.eql?('{{now}}')
-        target_value = Time.yesterday if target_value.eql?('{{yesterday}}')
-        return BigDecimal('0.0') if real_value.nil? or target_value.nil?
-        target_value = Time.parse(target_value) if target_value.is_a?(String)
-        real_value = Time.parse(real_value) if real_value.is_a?(String)
-        target_value = target_value.to_time unless target_value.is_a?(Time)
-        real_value = real_value.to_time unless real_value.is_a?(Time)
-        real_distance = BigDecimal.new((real_value - target_value).to_i, 4) # in seconds
-        score(real_distance)
+      def compare(real_value)
+        real_value = date_time_of(real_value)
+        return BigDecimal('0.0') if real_value.nil?
+        score(real_value)
+      end
+
+      def date_time_of(str)
+        return str.to_datetime if str.is_a?(Date) or str.is_a?(Time)
+        result = Time.now if str.eql?('{{now}}')
+        result ||= Time.yesterday if str.eql?('{{yesterday}}')
+        result ||= eval(str) rescue nil
+        result ||= DateTime.parse(str)
+        result.to_datetime
       end
     end
   end
