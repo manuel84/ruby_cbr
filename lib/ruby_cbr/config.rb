@@ -39,6 +39,7 @@ module CBR
       #('CBR::Similarity::'+@similarities[c.class.name][attr][:similarity]).constantize
       attr_config = @similarities[attr_name].with_indifferent_access
       opts = {}
+      opts[:case] = c
       opts[:borderpoints] = {}
       opts[:borderpoints] = Hash[attr_config[:borderpoints].split("\n").map {|line| line.split(',')}]
       class_name = 'CBR::Similarity::'+attr_config[:similarity]
