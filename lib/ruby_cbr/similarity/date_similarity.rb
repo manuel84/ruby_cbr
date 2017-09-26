@@ -17,6 +17,7 @@ module CBR
 
       def date_time_of(str)
         return str.to_datetime if str.is_a?(Date) or str.is_a?(Time)
+        return 10.years.ago if str.nil?
         result = Time.now if str.eql?('{{now}}')
         result ||= Time.yesterday if str.eql?('{{yesterday}}')
         result ||= eval(str) rescue nil
