@@ -25,7 +25,7 @@ module CBR
         if val.start_with?('{{') and val.end_with?('}}')
           method = val.gsub('{{', '').gsub('}}', '')
           target_set = opts[:case].send(method)
-          target_set.values.max
+          target_set.values.max || 0
         else
           0
         end
